@@ -1,0 +1,47 @@
+name: Rebase
+
+on:
+  workflow_dispatch:
+    inputs:
+      default_branch:
+        description: 'Source Branch of Rebase'
+        required: true
+      target_branch1:
+        description: 'Target Branch to Rebase'
+        required: true
+      target_branch2:
+        description: 'Target Branch to Rebase'
+        required: true
+   
+jobs:
+  Rebase1:
+    runs-on: ubuntu-latest
+    environment: UAT
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{secrets.PAT_RB}}
+      - name: ReSync Branch_1
+        uses: Joao208/resync-branch@1.5.0
+        with:
+          PERSONAL_TOKEN: ${{secrets.PAT_RB}}
+          BRANCH_NAME: ${{ github.event.inputs.target_branch1 }}
+          DEFAULT_BRANCH: ${{ github.event.inputs.default_branch }}
+
+  Rebase2:
+    runs-on: ubuntu-latest
+    needs: Rebase1
+    environment: UAT
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{secrets.PAT_RB}}
+      - name: ReSync Branch_1
+        uses: Joao208/resync-branch@1.5.0
+        with:
+          PERSONAL_TOKEN: ${{secrets.PAT_RB}}
+          BRANCH_NAME: ${{ github.event.inputs.target_branch2 }}
+          DEFAULT_BRANCH: ${{ github.event.inputs.default_branch }}
+
+          
+

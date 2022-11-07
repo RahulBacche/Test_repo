@@ -1,0 +1,41 @@
+name : Revert by Gitbash 
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to revert'
+        required: true
+
+jobs:
+  revert-commit-2:
+    runs-on: ubuntu-latest
+    steps:
+      - name : Checkout
+        uses: actions/checkout@v2
+        with: 
+          ref: Dev_test2
+          token : ${{ github.token }}
+          fetch-depth: 0
+
+      - name: setup git config
+        run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name : update git pull
+        run: |
+            git pull
+            git log -2
+            
+      - name : Checkout branch
+        run: |
+            git checkout ${{ github.event.inputs.branch }}           
+            git pull
+            
+      - name : Revert Head
+        run: |            
+            git revert HEAD -m1
+            git push
+            echo "running from main"
+

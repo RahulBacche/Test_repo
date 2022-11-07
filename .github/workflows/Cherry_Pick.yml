@@ -1,0 +1,39 @@
+name : Cherry Pick commit 
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Target branch'
+        required: true
+        
+      Commit_id:
+        description: 'SHA of Commit (Commit ID)'
+        required: true
+
+jobs:
+  Cherry_pick_commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name : Checkout
+        uses: actions/checkout@v2
+        with: 
+          ref: Dev_test2
+          token : ${{ github.token }}
+          fetch-depth: 0
+
+      - name: setup git config
+        run: |
+            git config --global user.name "${{ github.actor }}"
+            git config --global user.email "{{ github.actor }}@users.noreply.github.com"
+            
+      - name : Checkout branch
+        run: |
+            git checkout ${{ github.event.inputs.branch }}           
+            git cherry-pick ${{ github.event.inputs.Commit_id }}
+            #git notes copy <from> <to>
+            git push
+            
+            
+            
+            

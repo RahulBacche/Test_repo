@@ -1,0 +1,27 @@
+name: Push File
+
+on:
+  workflow_dispatch:
+    inputs:
+      destination_repo:
+        description: 'Destination Repo address'
+        required: true
+
+jobs:
+  copy-file:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Pushes test file
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.PAT_RB }}
+      with:
+        source_file: '.github'
+        destination_repo: ${{ github.event.inputs.destination_repo }}
+        #destination_folder: 
+        user_email: 'rahulbacche3@gmail.com'
+        user_name: 'RahulBacche'
+        commit_message: 'A custom message for the commit'

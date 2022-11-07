@@ -1,0 +1,45 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Branch_Merge
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: 'Source Branch to merge'
+        required: true
+      target_branch1:
+        description: 'Target Branch to merge'
+        required: true
+      target_branch2:
+        description: 'Target Branch to merge'
+        required: true
+
+jobs:
+
+  Branch_sync_1:
+    runs-on: ubuntu-latest
+    #needs: Branch_sync_1
+    environment: UAT
+    steps:
+      - uses: actions/checkout@v2
+      - uses: everlytic/branch-merge@1.1.2
+        with:
+          github_token: ${{ github.token }}
+          source_ref: ${{ github.event.inputs.source_branch }}
+          target_branch: ${{ github.event.inputs.target_branch1 }}
+          #commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
+          
+    
+  Branch_sync_2:
+    runs-on: ubuntu-latest
+    needs: Branch_sync_1
+    environment: UAT
+    steps:
+      - uses: actions/checkout@v2
+      - uses: everlytic/branch-merge@1.1.2
+        with:
+          github_token: ${{ github.token }}
+          source_ref: ${{ github.event.inputs.target_branch1 }}
+          target_branch: ${{ github.event.inputs.target_branch2 }}
+          #commit_message_template: '[Automated] Merged {target_branch1} into target {target_branch2}'

@@ -1,0 +1,42 @@
+name : Rebase by Gitbash 
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_branch:
+        description: 'Source Branch of Rebase'
+        required: true
+      target_branch:
+        description: 'Target Branch of rebase'
+        required: true
+
+jobs:
+  revert-commit-2:
+    runs-on: ubuntu-latest
+    steps:
+      - name : Checkout
+        uses: actions/checkout@v2
+        with: 
+          ref: ${{github.event.inputs.source_branch}}
+          fetch-depth: 0
+
+      - name: setup git config
+        run: |
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name : update git pull
+        run: |
+            git pull
+            git log -2
+            
+      - name : Checkout branch
+        run: |
+            git checkout ${{ github.event.inputs.target_branch }}
+            git pull
+            
+      - name : Revert Head
+        run: |            
+            git rebase ${{github.event.inputs.source_branch}}
+            git push --force
+            echo "Hello"
